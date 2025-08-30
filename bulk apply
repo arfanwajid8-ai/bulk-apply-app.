@@ -1,0 +1,56 @@
+
+
+```
+bulk-apply-app.zip
+├── bulk_apply_desktop_app.py   # Your main Python desktop app script
+└── .github
+    └── workflows
+        └── build.yml         # GitHub Actions workflow (v4, Windows + Mac build)
+```
+
+**Content of `build.yml`:**
+
+```yaml
+name: Build Bulk Apply App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller selenium tk
+
+      - name: Build app
+        run: |
+          pyinstaller --onefile --windowed bulk_apply_desktop_app.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bulk-apply-${{ matrix.os }}
+          path: dist/*
+```
+
+**How to use:**
+
+1. Create a new GitHub repository called `bulk-apply-app`.
+2. Upload the ZIP contents directly into the repo.
+3. Commit all files.
+4. Go to the **Actions** tab → select **Build Bulk Apply App** → click **Run workflow**.
+5. After the workflow finishes, download the `.exe` (Windows) or `.app` (Mac) from the **Artifacts** section.
