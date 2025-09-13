@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: indeed-backend
+    env: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    region: oregon
+
+  - type: worker
+    name: indeed-worker
+    env: docker
+    plan: free
+    dockerfilePath: ./worker/Dockerfile
+    region: oregon
+
+  - type: redis
+    name: indeed-redis
+    plan: free
+    region: oregon
